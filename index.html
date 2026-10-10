@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسبحة إلكترونية</title>
+    <style>
+        /* إعادة ضبط وتقسيم الصفحة */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        /* تصميم العداد الإلكتروني باللون البورجندي */
+        .counter-device {
+            background: linear-gradient(145deg, #6b1427, #4a0d1b);
+            border-radius: 50px 50px 80px 80px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            border: 2px solid #360813;
+            display: inline-block;
+            margin-bottom: 30px;
+            position: relative;
+            width: 260px;
+        }
+
+        /* الشاشة الرقمية */
+        .screen {
+            background-color: #9ea894;
+            border: 6px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+        }
+
+        .count-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 48px;
+            font-weight: bold;
+            color: #1a1a1a;
+            text-align: right;
+            letter-spacing: 4px;
+            height: 55px;
+            line-height: 55px;
+        }
+
+        .screen-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: bold;
+            color: #222;
+            margin-top: 5px;
+        }
+
+        /* تصميم الأزرار */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        /* زر العد الرئيسي الكبير */
+        .btn-count {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ffffff, #dcdcdc);
+            border: 4px solid #b0b0b0;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.3), inset 0 2px 5px rgba(255,255,255,0.8);
+            cursor: pointer;
+            outline: none;
+            transition: all 0.1s ease;
+        }
+
+        .btn-count:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* زر التصفير الصغير (RESET) */
+        .btn-reset {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #333;
+            border: 2px solid #222;
+            cursor: pointer;
+            outline: none;
+            position: absolute;
+            top: 0;
+            left: 25px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transition: all 0.1s ease;
+        }
+
+        .btn-reset:active {
+            transform: scale(0.9);
+            background: #111;
+        }
+
+        /* النصوص والأدعية */
+        .dhikr-title {
+            color: #c59b27;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .hadith-box {
+            color: #333;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        .hadith-intro {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .hadith-text {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- العداد الإلكتروني -->
+        <div class="counter-device">
+            <!-- الشاشة -->
+            <div class="screen">
+                <div class="count-display" id="counter">0</div>
+                <div class="screen-labels">
+                    <span>COUNT</span>
+                    <span>RESET</span>
+                </div>
+            </div>
+
+            <!-- الأزرار -->
+            <div class="buttons-container">
+                <button class="btn-reset" id="resetBtn" title="تصفير العداد"></button>
+                <button class="btn-count" id="countBtn" title="اضغط للعد"></button>
+            </div>
+        </div>
+
+        <!-- النصوص والأذكار -->
+        <div class="dhikr-title">
+            لا إله إلا الله وحده لا شريك له ، له الملك وله الحمد وهو على كل شيء قدير .
+        </div>
+
+        <div class="hadith-box">
+            <p class="hadith-intro">قال رسول الله صلى الله عليه وسلم :</p>
+            <p class="hadith-text">
+                خير الدعاء دعاء يوم عرفه ، وخير ما قلت أنا والنبيون من قبلي : لا إله إلا الله وحده لا شريك له ، له الملك وله الحمد وهو على كل شيء قدير .
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // تعريف العناصر واسترجاع العداد المحفوظ مسبقاً إن وجد
+        let count = localStorage.getItem('sebha_count') ? parseInt(localStorage.getItem('sebha_count')) : 0;
+        
+        const counterDisplay = document.getElementById('counter');
+        const countBtn = document.getElementById('countBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // عرض القيمة الحالية على الشاشة عند فتح الصفحة
+        counterDisplay.textContent = count;
+
+        // دالة توليد صوت التكة عند الضغط
+        function playClickSound(frequency = 600, type = 'sine', duration = 0.05) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                oscillator.type = type;
+                oscillator.frequency.value = frequency;
+
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio API is not supported");
+            }
+        }
+
+        // عند الضغط على زر العد الرئيسي الكبير
+        countBtn.addEventListener('click', function() {
+            count++;
+            counterDisplay.textContent = count;
+            localStorage.setItem('sebha_count', count); // حفظ العد تلقائياً
+            playClickSound(800, 'sine', 0.04); // صوت تكة خفيفة
+        });
+
+        // عند الضغط على زر التصفير الصغير
+        resetBtn.addEventListener('click', function() {
+            count = 0;
+            counterDisplay.textContent = count;
+            localStorage.setItem('sebha_count', count); // تحديث الحفظ إلى صفر
+            playClickSound(300, 'square', 0.08); // صوت مختلف للتصفير
+
+            // اهتزاز الهاتف عند تصفير العداد (إن كان المتصفح يدعم خاصية الـ Vibration)
+            if ("vibrate" in navigator) {
+                navigator.vibrate(100); // اهتزاز لمدة 100 مللي ثانية
+            }
+        });
+    </script>
+
+</body>
+</html>
